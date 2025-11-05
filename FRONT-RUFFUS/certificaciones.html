@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificaciones - RuffusCertify</title>
+    <link rel="stylesheet" href="css/certificaciones.css">
+    <link rel="shortcut icon" href="imgs/favicon.ico" type="image/x-icon">
+    <link rel="icon" type="image/png" href="/imgs/Logo.png">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+            <img src="imgs/logo.png" alt="CodeCertify Logo">
+            <span>RuffusCertify</span>
+            </div>
+            <nav>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="certificaciones.html">Certificaciones</a></li>
+                <li><a href="contacto.html">Contacto</a></li>
+                <li><a href="nosotros.html">Nosotros</a></li>
+            </ul>
+            </nav>
+            <div class="user-section">
+                <span id="userDisplay" class="user-name"></span>
+                <button id="loginBtn" class="icon-btn" title="Iniciar Sesión">🔒</button>
+                <button id="logoutBtn" class="icon-btn" title="Cerrar Sesión" style="display:none;">🚪</button>
+            </div>
+        </div>
+    </header>
+
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <h2>Iniciar Sesión</h2>
+            <form id="formLogin">
+                <input type="text" id="login" placeholder="Cuenta" required>
+                <input type="password" id="password" placeholder="Contraseña" required>
+                <button type="submit">Ingresar</button>
+            </form>
+        </div>
+    </div>
+    <section class="certificaciones">
+        <h2>Nuestras Certificaciones</h2>
+        <div class="cert-grid">
+
+            <div class="cert-card">
+            <h3>Tecnologías Web</h3>
+            <p>Domina estructuras de control, tipos de datos, POO, etc; así como otras tecnologías de desarrollo web.</p>
+            <p><strong>Ventajas:</strong> Certifica que posees una base sólida en conceptos esenciales de programación, estructuras de datos, POO, lenguajes (Java, Python, JavaScript), web (HTML, CSS), bases de datos (SQL) y herramientas (Git).</p>
+            <ul>
+                <li><strong>Puntuación mínima:</strong> 80/100</li>
+                <li><strong>Tiempo límite:</strong> 90 minutos</li>
+                <li><strong>Costo:</strong> $500 MXN</li>
+            </ul>
+            <button id="payJS" class="btn-pay">Pagar</button>
+            <button id="startJS" class="btn-start">Iniciar Examen</button>
+            </div>
+
+            
+            <div class="cert-card">
+            <h3>React Developer</h3>
+            <p>Aprende a construir interfaces modernas con React, manejar estados con hooks y optimizar la experiencia del usuario. <br><span>Disponible a partir del 14 de Noviembre de 2025.</span></p>
+            <p><strong>Ventajas:</strong> Este curso te prepara como React Developer para un perfil con alta demanda laboral. Combina la flexibilidad de trabajar en remoto con la ventaja de aprender mediante proyectos reales, para que egreses con experiencia práctica.</p>
+            <ul>
+                <li><strong>Puntuación mínima:</strong> 85/100</li>
+                <li><strong>Tiempo límite:</strong> 75 minutos</li>
+                <li><strong>Costo:</strong> $600 MXN</li>
+            </ul>
+            <button disabled class="btn-pay disabled-btn">Pagar</button>
+            <button disabled class="btn-start disabled-btn">Iniciar Examen</button>
+            </div>
+
+            
+            <div class="cert-card">
+            <h3>Python para Data Science</h3>
+            <p>Domina Python enfocado en análisis de datos, manejo de librerías como NumPy, Pandas y Matplotlib. <br><span>Disponible a partir del 2 de Diciembre de 2025.</span></p>
+            <p><strong>Ventajas:</strong> Este curso ofrece una ventaja triple: prepara para puestos con alta demanda en el mercado, brinda una gran flexibilidad laboral y, lo más importante, incluye proyectos reales que garantizan que los estudiantes gradúen con experiencia práctica y lista para usar.</p>
+            <ul>
+                <li><strong>Puntuación mínima:</strong> 78/100</li>
+                <li><strong>Tiempo límite:</strong> 100 minutos</li>
+                <li><strong>Costo:</strong> $650 MXN</li>
+            </ul>
+            <button disabled class="btn-pay disabled-btn">Pagar</button>
+            <button disabled class="btn-start disabled-btn">Iniciar Examen</button>
+            </div>
+
+            
+            <div class="cert-card">
+            <h3>Node.js Backend Specialist</h3>
+            <p>Aprende a construir APIs seguras y eficientes con Node.js y Express, manejando autenticación, rutas y controladores. <br><span>Disponible a partir del 3 de Enero de 2026.</span></p>
+            <p><strong>Ventajas:</strong> Conviértete en Node.js Backend Specialist y domina la tecnología que impulsa servidores y APIs. Desarrolla habilidades con alta demanda en el mercado, disfruta de flexibilidad laboral y aplica tus conocimientos en proyectos reales que reflejan los desafíos del desarrollo backend actual.</p>
+            <ul>
+                <li><strong>Puntuación mínima:</strong> 82/100</li>
+                <li><strong>Tiempo límite:</strong> 120 minutos</li>
+                <li><strong>Costo:</strong> $700 MXN</li>
+            </ul>
+            <button disabled class="btn-pay disabled-btn">Pagar</button>
+            <button disabled class="btn-start disabled-btn">Iniciar Examen</button>
+            </div>
+
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>CodeCertify</h4>
+                    <p>Plataforma líder en certificaciones de programacion</p>
+                    <p class="slogan">Certifica tu futuro, programa tu exito</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Enlaces rapidos</h4>
+                    <ul>
+                        <li><a href="index.html">Inicio</a></li>
+                        <li><a href="certificaciones.html">Certificaciones</a></li>
+                        <li><a href="contacto.html">Contacto</a></li>
+                        <li><a href="nosotros.html">Nosotros</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Siguenos</h4>
+                    <div class="social-links">
+                        <a href="https://www.instagram.com/ruffus.oficial21/" target="_blank">Instagram</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 CodeCertify. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/certificaciones.js"></script>
+</body>
+</html>

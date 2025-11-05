@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nosotros - RuffusCertify</title>
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    <link rel="icon" type="image/png" href="/imgs/Logo.png">
+    <link rel="stylesheet" href="css/nosotros.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+            <img src="imgs/logo.png" alt="CodeCertify Logo">
+            <span>RuffusCertify</span>
+            </div>
+            <nav>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="certificaciones.html">Certificaciones</a></li>
+                <li><a href="contacto.html">Contacto</a></li>
+                <li><a href="nosotros.html">Nosotros</a></li>
+            </ul>
+            </nav>
+            <div class="user-section">
+                <span id="userDisplay" class="user-name"></span>
+                <button id="loginBtn" class="icon-btn" title="Iniciar Sesión">🔒</button>
+                <button id="logoutBtn" class="icon-btn" title="Cerrar Sesión" style="display:none;">🚪</button>
+            </div>
+        </div>
+    </header>
+
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <h2>Iniciar Sesión</h2>
+            <form id="formLogin">
+                <input type="text" id="login" placeholder="Cuenta" required>
+                <input type="password" id="password" placeholder="Contraseña" required>
+                <button type="submit">Ingresar</button>
+            </form>
+        </div>
+    </div>
+
+    <main class="nosotros">
+        <div class="container">
+            <h1>Nuestro Equipo</h1>
+            <p>Conoce a las mentes brillantes detrás de RuffusCertify. Nuestro equipo está compuesto por profesionales apasionados por la tecnología y la educación.</p>
+            
+            <div class="team-grid">
+                <div class="team-card">
+                    <img src="imgs/joshuaPIC.jpg" alt="joshua" class="member-photo">
+                    <h3>Joshua Alexander Sierra Veloz</h3>
+                    <p>20 años | Estudiante y Entusiasta de los Sistemas</p>
+                    <p class="member-description">Con una sólida base de conocimientos en sistemas y una curiosidad insaciable, Joshua está en constante aprendizaje. Su gran interés por la tecnología lo impulsa a profundizar en nuevas herramientas y metodologías, siempre con la meta de aplicar ese conocimiento para optimizar procesos y contribuir de manera significativa al equipo.</p>
+                </div>
+
+                <div class="team-card">
+                    <img src="imgs/oscarPIC.png" alt="oscar" class="member-photo">
+                    <h3>Oscar Santiago Diaz López</h3>
+                    <p>20 años | Estudiante de Ingeniería en Sistemas Computacionales</p>
+                    <p class="member-description">Con una mente curiosa y orientada al futuro, combina su formación en ingeniería en sistemas con un profundo interés por la inteligencia artificial y su impacto en el mercado tecnológico. Siempre en busca de nuevos conocimientos, disfruta explorando herramientas emergentes y tendencias innovadoras. Además de su pasión por la tecnología, encuentra en el gaming una forma de creatividad, estrategia y aprendizaje constante.</p>
+                </div>
+
+                <div class="team-card">
+                    <img src="imgs/jesusPIC.jpg" alt="chuy" class="member-photo">
+                    <h3>Jesús Alberto Damasco López</h3>
+                    <p>24 años | Estudiante de Ingeniería en Sistemas</p>
+                    <p class="member-description">Apasionado por la estructura y gestión de la información. Mi área de especialización y favorita son las Bases de Datos, donde busco crear sistemas eficientes, seguros y robustos. Como futuro ingeniero, mi objetivo es diseñar soluciones de datos que resuelvan problemas complejos y agreguen un valor tangible a los proyectos.</p>
+                </div>
+
+                <div class="team-card">
+                    <img src="imgs/juanPIC.jpg" alt="juan" class="member-photo">
+                    <h3>Juan Antonio Alba Cardona</h3>
+                    <p>20 años | Estudiante de Sistemas y Gamer</p>
+                    <p class="member-description">Juan combina su pasión por los videojuegos con sus estudios en Ingeniería en Sistemas. Esta dualidad le ha permitido desarrollar un pensamiento lógico-agudo, habilidades para resolver problemas bajo presión y una comprensión innata de la experiencia de usuario. Ve en la tecnología no solo una carrera, sino un campo de posibilidades para la innovación y la creación de soluciones dinámicas.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>CodeCertify</h4>
+                    <p>Plataforma líder en certificaciones de programacion</p>
+                    <p class="slogan">Certifica tu futuro, programa tu exito</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Enlaces rapidos</h4>
+                    <ul>
+                        <li><a href="index.html">Inicio</a></li>
+                        <li><a href="certificaciones.html">Certificaciones</a></li>
+                        <li><a href="contacto.html">Contacto</a></li>
+                        <li><a href="nosotros.html">Nosotros</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Siguenos</h4>
+                    <div class="social-links">
+                        <a href="https://www.instagram.com/ruffus.oficial21/" target="_blank">Instagram</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 CodeCertify. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/auth.js"></script>
+</body>
+</html>

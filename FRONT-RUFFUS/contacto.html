@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto - RuffusCertify</title>
+    <link rel="stylesheet" href="css/contacto.css">
+    <link rel="shortcut icon" href="imgs/favicon.ico" type="image/x-icon">
+    <link rel="icon" type="image/png" href="/imgs/Logo.png">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+            <img src="imgs/logo.png" alt="CodeCertify Logo">
+            <span>RuffusCertify</span>
+            </div>
+            <nav>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="certificaciones.html">Certificaciones</a></li>
+                <li><a href="contacto.html">Contacto</a></li>
+                <li><a href="nosotros.html">Nosotros</a></li>
+            </ul>
+            </nav>
+            <div class="user-section">
+                <span id="userDisplay" class="user-name"></span>
+                <button id="loginBtn" class="icon-btn" title="Iniciar Sesión">🔒</button>
+                <button id="logoutBtn" class="icon-btn" title="Cerrar Sesión" style="display:none;">🚪</button>
+            </div>
+        </div>
+    </header>
+
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <h2>Iniciar Sesión</h2>
+            <form id="formLogin">
+                <input type="text" id="login" placeholder="Cuenta" required>
+                <input type="password" id="password" placeholder="Contraseña" required>
+                <button type="submit">Ingresar</button>
+            </form>
+        </div>
+    </div>
+    
+    <section class="info">
+        <h1>Contáctanos</h1>
+        <p>¿Tienes alguna pregunta o duda? Estamos aquí para ayudarte</p>
+    </section>
+
+    <section class="contact-section">
+        <div class="contact-container">
+            <h2 class="section-title">Envíanos tu mensaje</h2>
+            
+            <div id="alert" class="alert success">
+                <strong>✓ Mensaje Enviado Exitosamente</strong><br>
+            </div>
+
+            <form id="contactForm">
+                <div class="form-group">
+                    <label for="nombre">Nombre completo *</label>
+                    <input type="text" id="nombre" name="nombre" placeholder="Ingresa tu nombre completo" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="correo">Correo electrónico *</label>
+                    <input type="email" id="correo" name="correo" placeholder="tu@email.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="pregunta">Pregunta o duda *</label>
+                    <textarea id="pregunta" name="pregunta" placeholder="Escribe tu mensaje aquí..." required></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit">ENVIAR MENSAJE</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>CodeCertify</h4>
+                    <p>Plataforma líder en certificaciones de programacion</p>
+                    <p class="slogan">Certifica tu futuro, programa tu exito</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Enlaces rapidos</h4>
+                    <ul>
+                        <li><a href="index.html">Inicio</a></li>
+                        <li><a href="certificaciones.html">Certificaciones</a></li>
+                        <li><a href="contacto.html">Contacto</a></li>
+                        <li><a href="nosotros.html">Nosotros</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Siguenos</h4>
+                    <div class="social-links">
+                        <a href="https://www.instagram.com/ruffus.oficial21/" target="_blank">Instagram</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 CodeCertify. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+    <script>
+
+        const API_BASE_URL = 'http://localhost:3000/api';
+
+        const form = document.getElementById('contactForm');
+        const alert = document.getElementById('alert');
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const nombre = document.getElementById('nombre').value;
+            const correo = document.getElementById('correo').value;
+            const pregunta = document.getElementById('pregunta').value;
+
+            try {
+
+                const response = await fetch(`${API_BASE_URL}/contact/submit`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        nombre: nombre,
+                        email: correo,    
+                        mensaje: pregunta 
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    // Éxito: mostrar alerta
+                    console.log('Mensaje enviado al backend:', result);
+                    
+                    // Muestra alert de éxito
+                    alert.classList.add('show');
+                    
+                    // Limpia el formulario
+                    form.reset();
+
+                    // Scroll suave hacia el alert
+                    alert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+                    // Oculta el alert después de 5 segundos
+                    setTimeout(() => {
+                        alert.classList.remove('show');
+                    }, 5000);
+                } else {
+                    // Error del servidor
+                    console.error('Error del servidor:', result);
+                    alert('Error al enviar el mensaje: ' + (result.error || 'Error desconocido'));
+                }
+
+            } catch (error) {
+                // Error de conexión
+                console.error('Error de conexión:', error);
+                alert('Error de conexión con el servidor. Verifica que el backend esté ejecutándose.');
+            }
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/auth.js"></script>
+</body>
+</html>

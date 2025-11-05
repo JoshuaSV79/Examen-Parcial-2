@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Examen - Tecnologías Web</title>
+  <link rel="stylesheet" href="css/examen.css" />
+  <link rel="shortcut icon" href="imgs/favicon.ico" type="image/x-icon" />
+  <link rel="icon" type="image/png" href="/imgs/Logo.png">
+</head>
+
+<body>
+  <div class="exam-container">
+    <header class="exam-header">
+      <h1>Tecnologías Web</h1>
+      <div>
+        Alumno: <strong id="studentName"></strong><br>
+        <span id="currentDate"></span><br>
+        Progreso: <span id="progress">0/8</span>
+      </div>
+      <div>Tiempo restante: <span id="timerDisplay">--:--</span></div>
+    </header>
+
+    <main id="examContent">
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Cargando examen...</p>
+      </div>
+    </main>
+
+    <footer>
+      <button id="submitExam" class="btn-submit" disabled>Entregar Examen</button>
+    </footer>
+
+    <div id="resultado"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async function () {
+      if (usuarioActivo) {
+        await obtenerTiempoLimite(); // obtiene tiempo desde backend
+        await iniciarExamen();       // carga examen
+        iniciarTemporizador();       // inicia cuenta regresiva
+      } else {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Acceso requerido',
+          text: 'Debes iniciar sesión para realizar el examen',
+          confirmButtonColor: '#1a73e8'
+        }).then(() => {
+          window.location.href = '/';
+        });
+      }
+    });
+    function iniciarTemporizador() {
+      const timerDisplay = document.getElementById("timerDisplay");
+
+      timerInterval = setInterval(() => {
+        if (tiempoRestanteSeg <= 0) {
+          clearInterval(timerInterval);
+          Swal.fire({
+            icon: "warning",
+            title: "Tiempo agotado",
+            text: "Tu examen se enviará automáticamente.",
+            confirmButtonColor: "#1a73e8"
+          }).then(() => {
+            const respuestas = preguntas.map(q => {
+              const selected = document.querySelector(`input[name="q_${q.id}"]:checked`);
+              return { questionId: q.id, answer: selected ? selected.value : "" };
+            });
+            enviarRespuestas(respuestas);
+          });
+          return;
+        }
+
+        // Formato mm:ss
+        const min = Math.floor(tiempoRestanteSeg / 60);
+        const sec = tiempoRestanteSeg % 60;
+        timerDisplay.textContent = `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+        tiempoRestanteSeg--;
+      }, 1000);
+    }
+
+    const API = "http://localhost:3000/api/exams";
+    const examContent = document.getElementById("examContent");
+    const submitExamBtn = document.getElementById("submitExam");
+    const progressEl = document.getElementById("progress");
+    const resultado = document.getElementById("resultado");
+    const studentName = document.getElementById("studentName");
+
+    const usuarioActivo = JSON.parse(localStorage.getItem("usuarioActivo"));
+    const authToken = localStorage.getItem("authToken");
+
+    if (usuarioActivo) {
+      studentName.textContent = usuarioActivo.nombreCompleto || usuarioActivo.cuenta;
+    } else {
+      studentName.textContent = "Invitado";
+      Swal.fire({
+        icon: 'warning',
+        title: 'Acceso requerido',
+        text: 'Debes iniciar sesión para realizar el examen',
+        confirmButtonColor: '#1a73e8'
+      }).then(() => {
+        window.location.href = '/';
+      });
+    }
+    const currentDateEl = document.getElementById("currentDate");
+
+    //fecha actual en formato dd/mm/yyyy
+    function mostrarFechaActual() {
+      const hoy = new Date();
+      const opciones = { day: '2-digit', month: '2-digit', year: 'numeric' };
+      currentDateEl.textContent = `Fecha: ${hoy.toLocaleDateString('es-ES', opciones)}`;
+    }
+
+    mostrarFechaActual();
+
+    let preguntas = [];
+    let attemptId = null;
+    let tiempoLimiteMin = 0;
+    let tiempoRestanteSeg = 0;
+    let timerInterval;
+
+    async function obtenerTiempoLimite() {
+      try {
+        const res = await fetch("http://localhost:3000/api/certs/time");
+        const data = await res.json();
+        if (Array.isArray(data) && data[0]?.tiempoMinutos) {
+          tiempoLimiteMin = data[0].tiempoMinutos;
+          tiempoRestanteSeg = tiempoLimiteMin * 60;
+          console.log(`⏱ Tiempo límite: ${tiempoLimiteMin} minutos`);
+        } else {
+          throw new Error("Formato de respuesta inválido.");
+        }
+      } catch (error) {
+        console.error("Error al obtener tiempo límite:", error);
+        tiempoLimiteMin = 5; // valor por defecto
+        tiempoRestanteSeg = tiempoLimiteMin * 60;
+      }
+    }
+    async function iniciarExamen() {
+      try {
+        console.log('Token disponible:', !!authToken);
+
+        if (!authToken) {
+          throw new Error('No hay token de autenticación. Vuelve a iniciar sesión.');
+        }
+
+        const res = await fetch(`${API}/start`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authToken}`
+          }
+        });
+
+        console.log('Respuesta del servidor:', res.status);
+
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.error || `Error ${res.status}: ${res.statusText}`);
+        }
+
+        const data = await res.json();
+        console.log('Datos recibidos:', data);
+
+        if (data.questions) {
+          preguntas = data.questions;
+          attemptId = data.attemptId;
+          mostrarPreguntas();
+        } else {
+          throw new Error('No se recibieron preguntas del servidor');
+        }
+
+      } catch (error) {
+        console.error('Error al iniciar examen:', error);
+
+        let errorMessage = error.message;
+        if (error.message.includes('Token') || error.message.includes('autorizado')) {
+          errorMessage = 'Error de autenticación. Por favor, vuelve a iniciar sesión.';
+
+          localStorage.removeItem('usuarioActivo');
+          localStorage.removeItem('authToken');
+          localStorage.removeItem('token');
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 3000);
+        }
+
+        examContent.innerHTML = `
+         <div style="color: red; text-align: center; padding: 20px;">
+            <h3>Error al cargar el examen</h3>
+            <p>${errorMessage}</p>
+            <button onclick="window.location.href = 'certificaciones.html'" style="padding: 10px 20px; margin-top: 10px; background: #1a73e8; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                Regresar
+            </button>
+            </div>
+        `;
+      }
+    }
+
+    function mostrarPreguntas() {
+      examContent.innerHTML = "";
+      preguntas.forEach((q, index) => {
+        const div = document.createElement("div");
+        div.className = "card";
+        div.innerHTML = `
+          <p><strong>${index + 1}.</strong> ${q.text}</p>
+          ${q.options.map(opt => `
+            <label style="display: block; margin: 8px 0;">
+              <input type="radio" name="q_${q.id}" value="${opt}"> ${opt}
+            </label>
+          `).join("")}
+        `;
+        examContent.appendChild(div);
+      });
+
+      submitExamBtn.disabled = false;
+      actualizarProgreso();
+      examContent.addEventListener("change", actualizarProgreso);
+    }
+    function actualizarProgreso() {
+      const respondidas = preguntas.filter(q => {
+        return document.querySelector(`input[name="q_${q.id}"]:checked`);
+      }).length;
+      progressEl.textContent = `${respondidas}/8`;
+    }
+
+    async function enviarRespuestas(respuestas) {
+      try {
+        submitExamBtn.disabled = true;
+        submitExamBtn.textContent = "Enviando...";
+
+        const res = await fetch(`${API}/submit`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authToken}`
+          },
+          body: JSON.stringify({
+            attemptId: attemptId,
+            answers: respuestas
+          })
+        });
+
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.error || `Error ${res.status}`);
+        }
+
+        const data = await res.json();
+        console.log('Resultado del examen:', data);
+
+        resultado.innerHTML = `
+          <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-top: 20px;">
+            <h2 style="color: ${data.passed ? 'green' : 'red'}">
+              ${data.passed ? 'Aprobado' : 'Reprobado'} - ${data.score}/${data.total} (${Math.round((data.score / data.total) * 100)}%)
+            </h2>
+            <h3>Detalle de respuestas:</h3>
+            ${data.details.map(d => `
+              <div class="card" style="background: ${d.correct ? '#d4edda' : '#f8d7da'};">
+                <p><strong>Pregunta:</strong> ${d.text}</p>
+                <p><strong>Tu respuesta:</strong> ${d.yourAnswer || "(sin responder)"}</p>
+                <p><strong>Respuesta correcta:</strong> ${d.correctAnswer}</p>
+                <p class="${d.correct ? "ok" : "bad"}">
+                  ${d.correct ? "Correcto" : "Incorrecto"}
+                </p>
+              </div>
+            `).join("")}
+            <div class="regresar" style="text-align: center; margin-top: 20px;">
+              <button onclick="window.location.href = 'certificaciones.html'"
+                style="padding: 10px 20px; background: #1a73e8; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                Regresar
+              </button>
+            </div>
+          </div>
+        `;
+
+        examContent.style.display = "none";
+        submitExamBtn.style.display = "none";
+
+        Swal.fire({
+          icon: data.passed ? "success" : "error",
+          title: data.passed ? "Felicidades" : "Necesitas mejorar",
+          text: `Obtuviste ${data.score} de ${data.total} puntos. ${data.passed ? 'Has aprobado el examen.' : 'Necesitas al menos 6 puntos para aprobar.'}`,
+          confirmButtonColor: "#1a73e8"
+        });
+        if (data.passed) {
+          const resp = await fetch(`http://localhost:3000/api/certs/${attemptId}/pdf`, {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+            },
+          });
+
+          if (!resp.ok) {
+            console.error('No se pudo generar el certificado:', await resp.text());
+            return;
+          }
+
+          const blob = await resp.blob();
+          const url = URL.createObjectURL(blob);
+          window.open(url, '_blank'); // abre el PDF en una nueva pestaña
+        }
+      } catch (error) {
+        console.error('Error al enviar examen:', error);
+        Swal.fire({
+          icon: "error",
+          title: "Error al enviar examen",
+          text: error.message || "Intenta nuevamente más tarde.",
+          confirmButtonColor: "#1a73e8"
+        });
+
+        submitExamBtn.disabled = false;
+        submitExamBtn.textContent = "Entregar Examen";
+      }
+    }
+
+    submitExamBtn.addEventListener("click", () => {
+      const respuestas = preguntas.map(q => {
+        const selected = document.querySelector(`input[name="q_${q.id}"]:checked`);
+        return {
+          questionId: q.id,
+          answer: selected ? selected.value : ""
+        };
+      });
+
+      const sinResponder = respuestas.filter(r => !r.answer).length;
+      if (sinResponder > 0) {
+        Swal.fire({
+          icon: "warning",
+          title: "Preguntas sin responder",
+          text: `Tienes ${sinResponder} pregunta(s) sin responder. ¿Deseas continuar?`,
+          showCancelButton: true,
+          confirmButtonText: "Sí, entregar",
+          cancelButtonText: "Cancelar",
+          confirmButtonColor: "#1a73e8"
+        }).then(result => {
+          if (result.isConfirmed) enviarRespuestas(respuestas);
+        });
+      } else {
+        enviarRespuestas(respuestas);
+      }
+    });
+  </script>
+</body>
+
+</html>
