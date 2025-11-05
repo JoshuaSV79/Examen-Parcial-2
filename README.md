@@ -15,14 +15,13 @@ Proyecto del examen para el parcial 2 de programacion web
 * Pdfkit
 
 Recuerda usar 
-```markdown
-**PowerShell**
-
+### PowerShell
+```powershell
 npm install express cors nodemon pdfkit
 ```
 si solo quieres descargar la caperta node usa
 
-```markdown
-**PowerShell**
+### PowerShell
+```
 npm install 
 ```
